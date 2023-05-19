@@ -31,12 +31,13 @@ class dbConnect:
             cur.close
 
 
-    def getUser(email):
+    #def getUser(email):
+    def getUser(info):
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            sql = "SELECT * FROM users WHERE email=%s;"
-            cur.execute(sql, (email))
+            sql = "SELECT * FROM users WHERE email=%s OR user_name=%s;"
+            cur.execute(sql, (info,info))
             user = cur.fetchone()
             return user
         except Exception as e:
