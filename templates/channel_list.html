@@ -1,0 +1,27 @@
+<div class="main-container channelpage">
+    <div class="main-content">
+        <div class="channel-title">
+            <h1>チャンネル一覧</h1>
+            <div class="add-channel-container">
+                <span id="icon"><ion-icon name="add-circle-sharp"></ion-icon></span>
+                <button id="add-channel-btn">add ch</button>
+            </div>
+        </div>
+
+        <div class="pagination-container">
+            <p id="prev">&lt;&lt;</p>
+            <ul class="pagination"></ul>
+            <p id="next">&gt;&gt;</p>
+        </div>
+
+        {% if error_message %}
+        <div class="alert alert-danger" role="alert">
+            {{ error_message }}
+        </div>
+        {% endif %}
+
+        <ul class="channel-box"></ul>
+        {% include 'modal/add-channel.html' %}
+        {% include 'modal/delete-confirmation.html' %}
+    </div>
+</div>

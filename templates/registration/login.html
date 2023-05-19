@@ -1,0 +1,73 @@
+{% extends 'registration/base.html' %}
+{% block title %}
+<title>login</title>
+{% endblock %}
+{% block body %}
+
+<body>
+    <header>
+        <p class="header">EarlyBird-Chat</p>
+    </header>
+    <main>
+        <div class="content">
+            <div class="content-section">
+                <h1 class="login-body-message-title">アカウントにログインする</h1>
+                <p class="login-body-message-subtitle">リアルタイムにチームとコラボレーションする</p>
+                <div class="login-body-message-svg">
+                    <img src="../static/img/ToriBlue2.png" alt="early bird">
+                </div>
+            </div>
+            <div class="additional-section">
+                <div class="login-body-card-content" tabindex="0">
+                    <p class="login-body-card-title">EarlyBird専用チャットサービスです</p>
+
+                    <form action="/login" method="post">
+                        <div class="login-body-card-form">
+                            <div class="Input_container login-body-card-form-input">
+                                <fieldset class="Input_fieldset">
+                                    <legend class="Input_legend"></legend>
+                                    <div class="Input_wrapper"><input id="input_loginId"
+                                            class="Input form-control large" name="email" type="text" value=""
+                                            placeholder="電子メール もしくは ユーザー名"></div>
+                                </fieldset>
+                            </div>
+                            <div class="Input_container">
+                                <fieldset class="Input_fieldset password-input login-body-card-form-password-input">
+                                    <legend class="Input_legend"></legend>
+                                    <div class="Input_wrapper password-input-with-toggle"><input
+                                            id="input_password-input" class="Input form-control large" name="password"
+                                            type="password" value="" placeholder="パスワード">
+                                    </div><button id="password_toggle" type="button" class="password-input-toggle"><i
+                                            class="icon-eye-outline"></i></button>
+                                </fieldset>
+                            </div>
+                            {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                            <ul class="flashes">
+                                {% for message in messages %}
+                                <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                            {% endwith %}
+                            <div class="login-body-card-form-link">
+                                <!-- パスワード忘れは将来の拡張用 -->
+                                <a href="/reset_password">パスワードをお忘れですか?</a>
+                                <br>
+                                <a class="switch-register-mode" href="{{ url_for('signup') }}">登録はお済みですか？</a>
+                            </div>
+                            <button type="submit" data-testid="saveSetting" id="saveSetting"
+                                class="save-button btn btn-primary login-body-card-form-button-submit large"><span>ログイン</span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <footer id="footer">
+            <p>&copy; 2023 EarlyBird-Chat</p>
+        </footer>
+    </footer>
+</body>
+{% endblock %}
