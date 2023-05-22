@@ -8,9 +8,6 @@
             let ch_id =　null;
             console.log('ch_id = None !!!');
         }*/
-            let chatroomName = document.querySelector('#chatroom-name');
-            let ch_id = chatroomName.value;
-            console.log('ch_id = ', ch_id)
         //127.0.0.1:8080へwebsocket接続開通依頼
         let socket = io.connect('ws://127.0.0.1:8080',{
             //auth:{chid:${ch_id}}
@@ -20,17 +17,18 @@
         //WebSocket開通
         socket.on('connect', function() {
             console.log('User has connected!',socket.id);
-            let chatroomName = document.querySelector('#chatroom-name');
+            let chatroomName = document.querySelector('#chatroom-channel-id');
             let ch_id = chatroomName.value;
             console.log('ch_id = ', ch_id)
-            //socket.emit('select_channel',ch_id);
+            socket.emit('join_room',ch_id);
         });
 
         //message sendボタンの処理
-        $('.send-button').on('click', function() {
-            let textMessage = { text: $('#message-box').val(), ch_id: $('#channel-id').val() };
+        $('#add-message-btn').on('click', function(event) {
+            event.preventDefault();
+            let textMessage = { text: $('#message').val(), ch_id: $('#chatroom-channel-id').val() };
             socket.send(textMessage);
-            $('#message-box').val('');
+            $('#message').val('');
             console.log('served message');
         });
 
@@ -38,7 +36,7 @@
         $(document).on('click','.channel-box-list',function() {
             let ch_id = $(this).attr('channel-id');
             console.log('channel-box-list',ch_id);
-            socket.emit('select_channel',ch_id);
+            //socket.emit('select_channel',ch_id);
         });
 
         //チャンネルリスト追加 ADDボタンの処理
@@ -117,6 +115,7 @@
             console.log('CHANNEL MESSAGE UPDATE!', channel_id);
         });
 */
+/*
         $('#add-message-btn').on('click', function() {
             console.log('served message');
             let textMessage = { text: $('#message').val(), ch_id: $('#channel-id').val() };
@@ -124,15 +123,85 @@
             $('#message-box').val('');
             console.log('served message');
         });
-
+*/
         // テキストエリアの更新
         socket.on('text_update', function(msg) {
+            let uuid = '';
+            let uuname = '';
+            let mid = '';
             let string_txt = msg.text;
-            let messageContainer = document.getElementById('chat-messages');
+            let uid = msg.uid;
+            let cid = msg.channel_id
+            let latest_msg = msg.latest_msg;
+            if (latest_msg && latest_msg.length > 0) {
+                mid = latest_msg[0].id;
+                uuid = latest_msg[0].uid;
+                uuname = latest_msg[0].user_name;
+                console.log('uuid:', uuid);
+                console.log('mid:', mid);
+                console.log('uuname:', uuname);
+            }
+            
+            console.log('string_txt',string_txt);
+            console.log('uid',uid);
+            
+            let chatroomName = document.querySelector('#chatroom-channel-id');
+            let ch_id = chatroomName.value;
+            let messageArea = document.getElementById('message-area');
+            if(uid === uuid ) {
+                let myMessage = document.createElement('div');
+                    myMessage.classList.add("my-messages");
+                let nameContainer = document.createElement('div');
+                    nameContainer.classList.add("name-container");
+                let myName = document.createElement('p');
+                    myName.classList.add("my-name");
+                    myName.textContent = uuname;
+                    nameContainer.appendChild(myName);
+                let messageContainer = document.createElement('div');
+                    messageContainer.classList.add("message-container");
+                let boxRight = document.createElement('p');
+                    boxRight.classList.add("box");
+                    boxRight.classList.add("box-right");
+                    boxRight.textContent = string_txt;
+                    messageContainer.appendChild(boxRight);
+                let form = document.createElement('form');
+                    form.action = '/delete_message';
+                    form.method = 'POST';
+                let input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.value = cid;
+                    input.name = 'channel_id';
+                let button = document.createElement('button');
+                    button.className = 'delete-message-btn';
+                    button.name = 'message_id';
+                    button.value = mid;
+                let icon = document.createElement('ion-icon');
+                    icon.name = 'trash-outline';
+
+                    // 要素を組み合わせて階層構造を作成
+                    button.appendChild(icon);
+                    form.appendChild(input);
+                    form.appendChild(button);
+
+                    messageContainer.appendChild(form);
+                    myMessage.appendChild(nameContainer);
+                    myMessage.appendChild(messageContainer);
+                    messageArea.appendChild(myMessage)
+            }else{
+                let Message = document.createElement('div');
+                    Message.classList.add("messages");
+                let userName = document.createElement('p');
+                    userName.textContent=message.user_name;
+                    Message.appendChild(userName);
+                let boxleft = document.createElement('p');
+                    boxleft.textContent=message.message;
+                    Message.appendChild(boxleft);
+            }
+/*
             let newMessage = document.createElement('p');
             newMessage.textContent = string_txt;
             messageContainer.appendChild(newMessage);
-
+*/
             console.log('TEXT UPDATE!', string_txt);
         });
 

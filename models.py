@@ -145,6 +145,21 @@ class dbConnect:
             cur.close()
 
 
+
+    def getMessageLatest(cid):
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            sql = "SELECT id,u.uid, user_name, message FROM messages AS m INNER JOIN users AS u ON m.uid = u.uid WHERE cid = %s ORDER BY id DESC LIMIT 1;"
+            cur.execute(sql, (cid))
+            messages = cur.fetchall()
+            return messages
+        except Exception as e:
+            print(e + 'が発生しています')
+            return None
+        finally:
+            cur.close()
+
     def getMessageAll(cid):
         try:
             conn = DB.getConnection()

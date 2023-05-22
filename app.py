@@ -240,27 +240,41 @@ def connect(auth):
 def disconnect():
     global user_count
     room = str(session.get('room'))
+    print('room = ',room)
     leave_room(room)
     user_count -= 1
     print('WebSocket Disconnect!!!')
     print('user_count = ',user_count)
 
+@socketio.on('join_room')
+def join(ch_id):
+    print('ch_id = ',ch_id)
+    join_room(str(ch_id))
+    print('join_room')
+    session['room'] = ch_id
+
+
+
 # メッセージを送る時の処理
 @socketio.on('message')
 def Text_MSG(msg):
     #channel_id = str(session.get('room'))
+    print('msg = ',msg)
     uid = session.get("uid")
     if uid is None:
         return redirect('/login')
     message = msg['text']
     channel_id = msg['ch_id']
-    join_room(str(channel_id))
-    print('join_room',ch_id)
+    print('message = ', message)
+    print('channel_id = ', channel_id)
+    #join_room(str(channel_id))
+    #print('join_room',ch_id)
     if message:
         dbConnect.createMessage(uid, channel_id, message)
-    print('message = ',message)
-    print('channel_id = ',channel_id)
-    emit('text_update', {'text': msg['text']}, to=channel_id)
+    print('Create Message!!!')
+    latest_msg = dbConnect.getMessageLatest(channel_id)
+    print('latest_msg = ', latest_msg)
+    emit('text_update', {'text': msg['text'],'uid':uid,'latest_msg':latest_msg,'channel_id':channel_id}, to=channel_id)
 
 # チャンネル選択時の処理
 @socketio.on('select_channel')
@@ -315,6 +329,23 @@ def channel_add(addchannel):
         error = '既に同じチャンネルが存在しています'
         print(error)
         return app.render_template('error/error.html', error_message=error)
+
+#@socketio.on('detail')
+def soc_detail(cid):
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+    print('cid = ',cid)
+    cid = cid
+    channel = dbConnect.getChannelById(cid)
+    messages = dbConnect.getMessageAll(cid)
+    channels = dbConnect.getChannelAll()
+    return app.render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
+
+
+
+
+
 
 
 if __name__ == '__main__':
