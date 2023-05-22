@@ -33,10 +33,17 @@ const pagination = () => {
       if (i < first - 1 || i > last - 1) return;
       const a = document.createElement('a');
       const li = document.createElement('li');
+
+      //let ch_id = `${item.id}`;
+      a.setAttribute('channel-id', item.id);
+      a.classList.add('channel-box-list');
+
       const url = `/detail/${item.id}`;
       a.innerText = item.name;
       a.setAttribute('href', url);
+
       li.appendChild(a);
+
       //// もしチャンネル作成者uidとuidが同じだったら削除ボタンを追加
       if (uid === item.uid) {
         const deleteButton = document.createElement('button');

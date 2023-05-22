@@ -6,12 +6,23 @@ import hashlib
 import uuid
 import re
 
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 
+
+###################
+# Initialization  #
+###################
 app = Flask(__name__)
 app.secret_key = uuid.uuid4().hex
 app.permanent_session_lifetime = timedelta(days=30)
 
+app.config['SECRET_KEY'] = 'secret!'
+socketio = SocketIO(app, cors_allowed_origins='*')
+user_count = 0
 
+#########################
+# Registration FUNCTION #
+#########################
 @app.route('/signup')
 def signup():
     return render_template('registration/signup.html')
@@ -90,7 +101,10 @@ def index():
         channels = dbConnect.getChannelAll()
     return render_template('index.html', channels=channels, uid=uid)
 
-
+####################
+# CHANNEL FUNCTION #
+####################
+'''
 @app.route('/', methods=['POST'])
 def add_channel():
     uid = session.get('uid')
@@ -125,7 +139,7 @@ def update_channel():
     messages = dbConnect.getMessageAll(cid)
     channels = dbConnect.getChannelAll()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
-
+'''
 
 @app.route('/delete/<cid>')
 def delete_channel(cid):
@@ -142,7 +156,6 @@ def delete_channel(cid):
             channels = dbConnect.getChannelAll()
             return render_template('index.html', channels=channels, uid=uid)
 
-
 # uidもmessageと一緒に返す
 @app.route('/detail/<cid>')
 def detail(cid):
@@ -156,6 +169,10 @@ def detail(cid):
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
 
+####################
+# MESSAGE FUNCTION #
+####################
+'''
 @app.route('/message', methods=['POST'])
 def add_message():
     uid = session.get("uid")
@@ -172,7 +189,7 @@ def add_message():
     messages = dbConnect.getMessageAll(channel_id)
     channels = dbConnect.getChannelAll()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
-
+'''
 
 @app.route('/delete_message', methods=['POST'])
 def delete_message():
@@ -190,7 +207,9 @@ def delete_message():
     channels = dbConnect.getChannelAll()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
-
+#################
+# ERROR HANDLER #
+#################
 @app.errorhandler(404)
 def show_error404(error):
     return render_template('error/404.html')
@@ -201,5 +220,103 @@ def show_error500(error):
     return render_template('error/500.html')
 
 
+######################
+# WEBSOCKET FUNCTION #
+######################
+
+# ユーザーが新しく接続すると実行
+@socketio.on('connect')
+def connect(auth):
+    global user_count 
+    user_count += 1
+    if session.get('sid') is not None:
+        sid = session.get('sid')
+    print('auth = ',str(auth))
+    print('WebSocket Connecting!!!')
+    print('user_count = ', user_count)
+
+# ユーザーの接続が切断すると実行
+@socketio.on('disconnect')
+def disconnect():
+    global user_count
+    room = str(session.get('room'))
+    leave_room(room)
+    user_count -= 1
+    print('WebSocket Disconnect!!!')
+    print('user_count = ',user_count)
+
+# メッセージを送る時の処理
+@socketio.on('message')
+def Text_MSG(msg):
+    #channel_id = str(session.get('room'))
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+    message = msg['text']
+    channel_id = msg['ch_id']
+    join_room(str(channel_id))
+    print('join_room',ch_id)
+    if message:
+        dbConnect.createMessage(uid, channel_id, message)
+    print('message = ',message)
+    print('channel_id = ',channel_id)
+    emit('text_update', {'text': msg['text']}, to=channel_id)
+
+# チャンネル選択時の処理
+@socketio.on('select_channel')
+def update_ch(ch_id):
+    print('ch_id from parameter = ',ch_id)
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+    else:
+        get_ch_id = session.get("room")
+        print('ch_id from session.get = ',get_ch_id)
+        print('request.sid = ',request.sid)
+        sid = request.sid
+
+        if get_ch_id is not None:
+            leave_room(str(get_ch_id))
+            print('leave_room',get_ch_id)
+        join_room(str(ch_id))
+        print('join_room',ch_id)
+        session['room'] = ch_id
+        '''
+        channels = dbConnect.getChannelAll()
+        channel = dbConnect.getChannelById(ch_id)
+        messages = dbConnect.getMessageAll(ch_id)
+        #print('channel = ',channel)
+        #print('messages = ',messages)
+        emit('update_channel',{'ch':channel,'messages':messages},to=sid)
+        '''
+
+
+# チャンネル選択時の処理
+@socketio.on('channel_add')
+def channel_add(addchannel):
+    print('Broadcast channel list!!')
+    print('channelname = ',addchannel)
+    uid = session.get("uid")
+    if uid is None:
+        return redirect('/login')
+
+    channel_name = addchannel['channel_name']
+    print('channel_name = ',channel_name)
+    channel = dbConnect.getChannelByName(channel_name)
+
+    if channel == None:
+        channel_description = addchannel['channel_abstract']
+        dbConnect.addChannel(uid, channel_name, channel_description)
+        print('channel add success!!!')
+        channels = dbConnect.getChannelAll()
+        print('channels = ',channels)
+        emit('channel_add_list', {'channels': channels}, broadcast=True)
+    else:
+        error = '既に同じチャンネルが存在しています'
+        print(error)
+        return app.render_template('error/error.html', error_message=error)
+
+
 if __name__ == '__main__':
-    app.run(debug=True,port='5001')
+    #app.run(debug=True,port='8080')
+    socketio.run(app, debug=True,port=8080)
