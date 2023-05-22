@@ -55,13 +55,14 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def userLogin():
-    email = request.form.get('email')
+    #email = request.form.get('email')
+    login_info = request.form.get('email')
     password = request.form.get('password')
 
-    if email =='' or password == '':
+    if login_info =='' or password == '':
         flash('空のフォームがあるようです')
     else:
-        user = dbConnect.getUser(email)
+        user = dbConnect.getUser(login_info)
         if user is None:
             flash('このユーザーは存在しません')
         else:
@@ -201,4 +202,4 @@ def show_error500(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port='5001')
