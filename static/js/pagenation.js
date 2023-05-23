@@ -12,6 +12,7 @@ const pagination = () => {
 
   // <ul class="pagination"></ul> の中身(li)を書き換える
   const paginationUl = document.querySelector('.pagination');
+  paginationUl.innerHTML='';
   let pageCount = 0;
   while (pageCount < TOTAL) {
     let li = document.createElement('li');
@@ -60,11 +61,12 @@ const pagination = () => {
         li.appendChild(deleteButton);
         deleteButton.addEventListener('click', () => {
           modalOpen('delete');
-          const confirmationButtonLink = document.getElementById(
+           let confirmationButtonLink = document.getElementById(
             'delete-confirm-link'
           ); // aタグ
           const url = `/delete/${item.id}`;
           confirmationButtonLink.setAttribute('href', url);
+          //confirmationButtonLink.setAttribute('data-value', item.id);
         });
       }
 

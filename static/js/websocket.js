@@ -18,9 +18,11 @@
         socket.on('connect', function() {
             console.log('User has connected!',socket.id);
             let chatroomName = document.querySelector('#chatroom-channel-id');
-            let ch_id = chatroomName.value;
-            console.log('ch_id = ', ch_id)
-            socket.emit('join_room',ch_id);
+            if (chatroomName){
+                let ch_id = chatroomName.value;
+                console.log('ch_id = ', ch_id)
+                socket.emit('join_room',ch_id);
+            }
         });
 
         //message sendボタンの処理
@@ -32,27 +34,51 @@
             console.log('served message');
         });
 
+
+        //メッセージ削除ボタンの処理
+        $(document).on('click', '.delete-message-btn', function(event) {
+            event.preventDefault();
+            let dellmessage = { channel_id: $('#delete-confirm-link').attr('data-value')};
+            socket.emit('channel_dell',dellchannel);
+            $('#delete-channel-modal').removeAttr("style").hide();
+            console.log('Send Channel delete info!!! ',dellchannel);
+        });
+        
+        //チャンネルリスト削除ボタンの処理
+        $(document).on('click', '#delete-channel-confirmation-btn', function(event) {
+            event.preventDefault();
+            let dellchannel = { channel_id: $('#delete-confirm-link').attr('data-value')};
+            socket.emit('channel_dell',dellchannel);
+            $('#delete-channel-modal').removeAttr("style").hide();
+            console.log('Send Channel delete info!!! ',dellchannel);
+        });
+/*
         //チャンネルリストを押したときの処理
         $(document).on('click','.channel-box-list',function() {
             let ch_id = $(this).attr('channel-id');
             console.log('channel-box-list',ch_id);
             //socket.emit('select_channel',ch_id);
         });
+*/
 
         //チャンネルリスト追加 ADDボタンの処理
-        $(document).on('click', '#add-button', function() {
-            let addchannel = { channel_name: $('#add-channel-name').val(), channel_abstract: $('#add-channel-abstract').val() };
+        $(document).on('click', '#add-channel-confirmation-btn', function() {
+            event.preventDefault();
+            let addchannel = { channel_name: $('#channel-title').val(), channel_abstract: $('#channel-description').val() };
             socket.emit('channel_add',addchannel);
-            $('#add-channel-name').val('')
-            $('#add-channel-abstract').val('')
-            $('#chModal').hide();
+            $('#channel-title').val('')
+            $('#channel-description').val('')
+            $('#add-channel-modal').removeAttr("style").hide();
             console.log('Send Channel add info!!! ');
         });
 
-
-
         //チャンネルリスト追加後の更新
         socket.on('channel_add_list',function(list) {
+            
+            channels = list.channels;
+            uid = list.uid;
+            pagination();
+/*
             console.log('channel list1',list);
             let channelListContainer = document.getElementById('channel-list-container');
             channelListContainer.innerHTML = ''; // 一旦メッセージをクリア
@@ -71,7 +97,7 @@
                     </a>
                 `;
                 channelListContainer.appendChild(channelList);
-            });
+            });*/
         });
 
         //チャンネル選択後の更新
@@ -191,11 +217,16 @@
                 let Message = document.createElement('div');
                     Message.classList.add("messages");
                 let userName = document.createElement('p');
-                    userName.textContent=message.user_name;
+                    userName.classList.add("user-name");
+                    userName.textContent=uuname;
                     Message.appendChild(userName);
                 let boxleft = document.createElement('p');
-                    boxleft.textContent=message.message;
+                    boxleft.textContent=string_txt;
+                    boxleft.classList.add("box");
+                    boxleft.classList.add("box-left");
                     Message.appendChild(boxleft);
+                    messageArea.appendChild(Message)
+                
             }
 /*
             let newMessage = document.createElement('p');
