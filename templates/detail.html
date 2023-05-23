@@ -16,9 +16,10 @@
 </script>
 
 <script src="{{url_for('static',filename='js/scroll-message.js')}}" type="text/javascript"></script>
+{% if uid == channel.uid %}
 <script src="{{url_for('static',filename='js/update-channel.js')}}" type="text/javascript"></script>
+{% endif %}
 <script src="{{url_for('static',filename='js/modal.js')}}" type="text/javascript"></script>
-
 <script src="{{url_for('static',filename='js/pagenation.js')}}" type="text/javascript"></script>
 
 {% endblock %}
