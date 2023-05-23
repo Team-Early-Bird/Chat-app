@@ -1,16 +1,9 @@
-/* .channelpage {
-  display: flex;
-  flex-direction: column;
-} */
-
 .channel-list {
   position: fixed;
   z-index: 16;
-  /* left: 0; */
   display: flex;
   width: 250px;
   height: calc(100vh - 40px);
-  /* height: 100%; */
   flex-direction: column;
   color: var(--snow);
   background-color: #1e325c;
@@ -44,7 +37,6 @@
 .channel-title {
   display: flex;
   flex-direction: column;
-  /* gap: 24px; */
   align-items: center;
   height: 72px;
 }
@@ -55,13 +47,13 @@
 }
 
 .channel-title button {
-  padding: 2px 10px; /* 上下に10px、左右に20pxのパディングを追加 */
+  padding: 2px 10px;
   background-color: var(--navy);
-  color: var(--snow); /* ボタンのテキスト色を設定 */
-  border: none; /* ボーダーを削除 */
-  border-radius: 5px; /* ボーダーラディウスを追加 */
-  font-size: 1em; /* フォントサイズを設定 */
-  cursor: pointer; /* マウスカーソルをポインターに変更 */
+  color: var(--snow);
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
   font-weight: 600;
 }
 
@@ -72,7 +64,7 @@
 .add-channel-container {
   display: flex;
   align-items: center;
-  gap: 5px; /* Adjust this value as needed */
+  gap: 5px;
 }
 
 #icon {
@@ -80,9 +72,6 @@
 }
 
 .channel-box {
-  /* background-color: transparent; */
-  /* backdrop-filter: blur(16px); */
-  /* -webkit-backdrop-filter: blur(16px); */
   width: 100%;
   min-height: 50%;
   display: flex;
@@ -95,7 +84,6 @@
   list-style: none;
   margin-bottom: 5px;
   padding-bottom: 3px;
-  /* padding-right: 16px; */
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
@@ -128,8 +116,6 @@
 
 .pagination-container {
   width: 100%;
-  /* border-bottom: 2px solid var(--grey); */
-  /* box-shadow: 0 32px 30px -30px var(--wood); */
 }
 
 .pagination {
@@ -137,8 +123,8 @@
 }
 
 .pagination li.colored {
-  background-color: var(--snow); /* 背景色を変更 */
-  color: var(--navy); /* 文字色を変更 */
+  background-color: var(--snow);
+  color: var(--navy);
 }
 
 #prev,
@@ -165,59 +151,3 @@
 .smaller-btn {
   color: var(--snow);
 }
-
-/* @media screen and (max-width: 639px) {
-  .channel-list {
-    display: none;
-  }
-} */
-
-/* @media screen and (max-width: 639px) {
-  .main-content {
-    width: 90vw;
-  }
-  .channel-title {
-    flex-direction: column;
-    gap: 0;
-  }
-  .channel-title h1 {
-    text-align: center;
-  }
-  .channel-box {
-    width: 100%;
-  }
-  .channel-box li a {
-    font-size: 16px;
-  }
-}
-
-@media only screen and (min-width: 640px) and (max-width: 1023px) {
-  .main-content {
-    width: 70vw;
-  }
-  .channel-title {
-    flex-direction: column;
-  }
-  .channel-title h1 {
-    text-align: center;
-  }
-  .channel-box {
-    width: 80%;
-  }
-  .channel-box li a {
-    font-size: 16px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  .main-content {
-    width: 70vw;
-  }
-  .channel-title {
-    flex-direction: row;
-    justify-content: space-around;
-  }
-  .channel-box {
-    width: 80%;
-  }
-} */
