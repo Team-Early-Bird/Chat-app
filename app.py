@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session, flash
+from flask import Flask, request, redirect, render_template, session, flash, jsonify
 from models import dbConnect
 from util.user import User
 from datetime import timedelta
@@ -87,7 +87,8 @@ def index():
     if uid is None:
         return redirect('/login')
     else:
-        channels = dbConnect.getChannelAll()
+        # channels = dbConnect.getChannelAll()
+        channels = dbConnect.getChannelsOrderedByDate()  # 修正
     return render_template('index.html', channels=channels, uid=uid)
 
 
@@ -99,9 +100,11 @@ def add_channel():
     channel_name = request.form.get('channel-title')
     channel_description = request.form.get('channel-description')
     channel = dbConnect.getChannelByName(channel_name)
-    if channel_name == '' or channel_description == '':
-        error = '空欄があり登録できません'
-        channels = dbConnect.getChannelAll()
+    # if channel_name == '' or channel_description == '':
+    if channel_name == '':
+        error = 'チャンネル名が空欄です'
+        # channels = dbConnect.getChannelAll()
+        channels = dbConnect.getChannelsOrderedByDate()  # 修正
         return render_template('index.html', channels=channels, error_message=error, uid=uid)
     elif channel is None:
         dbConnect.addChannel(uid, channel_name, channel_description)
@@ -123,7 +126,8 @@ def update_channel():
     dbConnect.updateChannel(uid, channel_name, channel_description, cid)
     channel = dbConnect.getChannelById(cid)
     messages = dbConnect.getMessageAll(cid)
-    channels = dbConnect.getChannelAll()
+    # channels = dbConnect.getChannelAll()
+    channels = dbConnect.getChannelsOrderedByDate()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
 
@@ -139,7 +143,8 @@ def delete_channel(cid):
             return redirect ('/')
         else:
             dbConnect.deleteChannel(cid)
-            channels = dbConnect.getChannelAll()
+            # channels = dbConnect.getChannelAll()
+            channels = dbConnect.getChannelsOrderedByDate()
             return render_template('index.html', channels=channels, uid=uid)
 
 
@@ -152,7 +157,8 @@ def detail(cid):
     cid = cid
     channel = dbConnect.getChannelById(cid)
     messages = dbConnect.getMessageAll(cid)
-    channels = dbConnect.getChannelAll()
+    # channels = dbConnect.getChannelAll()
+    channels = dbConnect.getChannelsOrderedByDate()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
 
@@ -170,7 +176,8 @@ def add_message():
 
     channel = dbConnect.getChannelById(channel_id)
     messages = dbConnect.getMessageAll(channel_id)
-    channels = dbConnect.getChannelAll()
+    # channels = dbConnect.getChannelAll()
+    channels = dbConnect.getChannelsOrderedByDate()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
 
@@ -187,7 +194,8 @@ def delete_message():
 
     channel = dbConnect.getChannelById(cid)
     messages = dbConnect.getMessageAll(cid)
-    channels = dbConnect.getChannelAll()
+    # channels = dbConnect.getChannelAll()
+    channels = dbConnect.getChannelsOrderedByDate()
     return render_template('detail.html', messages=messages, channel=channel, uid=uid, channels=channels)
 
 

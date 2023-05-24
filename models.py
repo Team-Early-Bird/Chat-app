@@ -92,6 +92,21 @@ class dbConnect:
             cur.close()
 
 
+    def getChannelsOrderedByDate():
+        try:
+            conn = DB.getConnection()
+            cur = conn.cursor()
+            query = "SELECT c.id,c.uid,c.name,MAX(m.created_at) AS latest_created_at FROM channels c LEFT JOIN (SELECT cid,created_at FROM messages UNION SELECT id,created_at FROM channels WHERE id NOT IN (SELECT DISTINCT cid FROM messages))m ON c.id = m.cid GROUP BY id,name ORDER BY latest_created_at DESC"
+            cur.execute(query)
+            results = cur.fetchall()
+            return results
+        except Exception as e:
+            print(e + 'が発生しています')
+            return None
+        finally:
+            cur.close()
+
+
     def addChannel(uid, newChannelName, newChannelDescription):
         try:
             conn = DB.getConnection()
