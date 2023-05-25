@@ -25,7 +25,7 @@ class dbConnect:
             id = cur.fetchone()
             return id
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close
@@ -41,7 +41,7 @@ class dbConnect:
             user = cur.fetchone()
             return user
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close
@@ -56,7 +56,7 @@ class dbConnect:
             channels = cur.fetchall()
             return channels
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -71,7 +71,7 @@ class dbConnect:
             channel = cur.fetchone()
             return channel
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -86,7 +86,7 @@ class dbConnect:
             channel = cur.fetchone()
             return channel
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -96,12 +96,12 @@ class dbConnect:
         try:
             conn = DB.getConnection()
             cur = conn.cursor()
-            query = "SELECT c.id,c.uid,c.name,MAX(m.created_at) AS latest_created_at FROM channels c LEFT JOIN (SELECT cid,created_at FROM messages UNION SELECT id,created_at FROM channels WHERE id NOT IN (SELECT DISTINCT cid FROM messages))m ON c.id = m.cid GROUP BY id,name ORDER BY latest_created_at DESC"
+            query = "SELECT c.id,c.uid,c.name,MAX(m.created_at) AS latest_created_at FROM channels c LEFT JOIN (SELECT cid,created_at FROM messages UNION SELECT id,created_at FROM channels WHERE id NOT IN (SELECT DISTINCT cid FROM messages)) AS m ON c.id = m.cid GROUP BY id,name ORDER BY latest_created_at DESC"
             cur.execute(query)
             results = cur.fetchall()
             return results
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -115,25 +115,25 @@ class dbConnect:
             cur.execute(sql, (uid, newChannelName, newChannelDescription))
             conn.commit()
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
 
 
-    def getChannelByName(channel_name):
-        try:
-            conn = DB.getConnection()
-            cur = conn.cursor()
-            sql = "SELECT * FROM channels WHERE name=%s;"
-            cur.execute(sql, (channel_name))
-            channel = cur.fetchone()
-        except Exception as e:
-            print(e + 'が発生しました')
-            return None
-        finally:
-            cur.close()
-            return channel
+    # def getChannelByName(channel_name):
+    #     try:
+    #         conn = DB.getConnection()
+    #         cur = conn.cursor()
+    #         sql = "SELECT * FROM channels WHERE name=%s;"
+    #         cur.execute(sql, (channel_name))
+    #         channel = cur.fetchone()
+    #     except Exception as e:
+    #         print(e + 'が発生しました')
+    #         return None
+    #     finally:
+    #         cur.close()
+    #         return channel
 
 
     def updateChannel(uid, newChannelName, newChannelDescription, cid):
@@ -154,7 +154,7 @@ class dbConnect:
             cur.execute(sql, (cid))
             conn.commit()
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -169,7 +169,7 @@ class dbConnect:
             messages = cur.fetchall()
             return messages
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -183,7 +183,7 @@ class dbConnect:
             cur.execute(sql, (uid, cid, message))
             conn.commit()
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
@@ -197,7 +197,7 @@ class dbConnect:
             cur.execute(sql, (message_id))
             conn.commit()
         except Exception as e:
-            print(e + 'が発生しています')
+            print(e , 'が発生しています')
             return None
         finally:
             cur.close()
