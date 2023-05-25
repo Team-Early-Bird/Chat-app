@@ -19,6 +19,7 @@ CREATE TABLE channels (
     uid varchar(255) REFERENCES users(uid),
     name varchar(255) UNIQUE NOT NULL,
     abstract varchar(255)
+    created_at timestamp not null default current_timestamp
 );
 
 CREATE TABLE messages (
