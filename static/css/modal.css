@@ -7,23 +7,11 @@
   height: 100%;
   width: 100%;
   overflow: auto;
-  /* background-color: rgba(240, 240, 240, 0.5); */
 }
-
-/* .modal-content {
-  border: 1px solid #777;
-  background-color: var(--snow);
-  margin: 20% auto;
-  width: 50%;
-  animation-name: modalopen;
-  animation-duration: 1s;
-  position: relative;
-} */
 
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto;
-  /* padding: 20px; */
   border: 1px solid #888;
   width: 640px;
   height: 245px;
@@ -33,9 +21,8 @@
   background-color: #fefefe;
   margin: 15% auto;
   border: 1px solid #888;
-  width: 640px; /* 幅を固定 */
-  height: 180px; /* 高さを固定 */
-  /* その他のスタイル */
+  width: 640px;
+  height: 180px;
 }
 
 #delete-channel-modal .modal-body button {
@@ -63,9 +50,8 @@
   background-color: #fefefe;
   margin: 15% auto;
   border: 1px solid #888;
-  width: 640px; /* 幅を固定 */
-  height: 240px; /* 高さを固定 */
-  /* その他のスタイル */
+  width: 640px;
+  height: 240px;
 }
 
 @keyframes modalopen {
@@ -85,7 +71,6 @@
   background: #192a4d;
   min-height: 56px;
   padding: 20px 48px 2px 15px;
-  /* border-radius: 4px 4px 0 0; */
   color: var(--snow);
   display: flex;
   justify-content: space-between;
@@ -119,11 +104,9 @@
   width: 70%;
   background-color: transparent;
   border-bottom: 1px solid lightgrey;
-  /* box-shadow: 0 10px 15px -12px var(--middle_pink); */
   margin-top: 8px;
   margin-bottom: 20px;
   padding-bottom: 10px;
-  /* color: var(--middle_pink); */
 }
 
 #bar {
@@ -160,7 +143,6 @@
 
 @media screen and (max-width: 639px) {
   .modal-content {
-    /* margin: 35% auto; */
     width: 50vw;
     height: 30vh;
   }
@@ -187,12 +169,3 @@
     height: 25vh;
   }
 }
-
-/* @media only screen and (min-width: 640px) and (max-width: 1023px) {
-  .modal-content {
-    width: 95%;
-  }
-  .modal {
-    padding-left: 80px;
-  }
-} */
